@@ -1,5 +1,5 @@
 //
-//  RegisterVC.swift
+//  LoginVC.swift
 //  Memory
 //
 //  Created by Георгий Мамардашвили on 20.06.17.
@@ -8,15 +8,14 @@
 
 import UIKit
 
-class RegisterVC: UIViewController
+class LoginVC: UIViewController
 {
     var logoText: UILabel? = nil
     var typeText: UILabel? = nil
     var contentView: UIView? = nil
     var usernameTF: UITextField? = nil
-    var emailTF: UITextField? = nil
     var passwordTF: UITextField? = nil
-    var haveAccountBT: UIButton? = nil
+    lazy var notHaveAccountBT: UIButton? = nil
     var okBT: UIButton? = nil
     
     override func viewDidLoad()
@@ -29,24 +28,24 @@ class RegisterVC: UIViewController
     }
 }
 
-//MARK: --actions
-extension RegisterVC
+//MARK:-- actions
+extension LoginVC
 {
-    @objc func goToLoginVC()
+    @objc func goToRegisterVC()
     {
-        self.navigationController?.pushViewController(LoginVC(), animated: true)
+        self.navigationController?.pushViewController(RegisterVC(), animated: true)
     }
 }
 
-//create view
-extension RegisterVC
+//MARK:-- create view
+extension LoginVC
 {
     func setView()
     {
         setLogoText()
         setTypeText()
         setContentView()
-        setHaveAccountBT()
+        setNotHaveAccountBT()
         setOkBT()
     }
     
@@ -67,7 +66,7 @@ extension RegisterVC
     func setTypeText()
     {
         typeText = UILabel();
-        typeText?.text = "Register"
+        typeText?.text = "Login"
         typeText?.font = UIFont.systemFont(ofSize: 20)
         typeText?.textAlignment = .center
         typeText?.translatesAutoresizingMaskIntoConstraints = false
@@ -87,13 +86,12 @@ extension RegisterVC
         contentView?.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15).isActive=true
         contentView?.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15).isActive=true
         contentView?.topAnchor.constraint(equalTo: (typeText?.bottomAnchor)!, constant: 10).isActive=true
-        contentView?.heightAnchor.constraint(equalToConstant: 125).isActive=true
-        setusernameTF()
-        setEmailTF()
+        contentView?.heightAnchor.constraint(equalToConstant: 80).isActive=true
+        setUsernameTF()
         setPasswordTF()
     }
     
-    func setusernameTF()
+    func setUsernameTF()
     {
         usernameTF = UITextField();
         usernameTF?.placeholder = "username"
@@ -106,19 +104,6 @@ extension RegisterVC
         usernameTF?.heightAnchor.constraint(equalToConstant: 35).isActive=true
     }
     
-    func setEmailTF()
-    {
-        emailTF = UITextField();
-        emailTF?.placeholder = "email"
-        emailTF?.borderStyle = .roundedRect
-        emailTF?.translatesAutoresizingMaskIntoConstraints = false
-        view?.addSubview(emailTF!)
-        emailTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
-        emailTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
-        emailTF?.topAnchor.constraint(equalTo: (usernameTF?.bottomAnchor)!, constant: 10).isActive=true
-        emailTF?.heightAnchor.constraint(equalToConstant:35).isActive=true
-    }
-    
     func setPasswordTF()
     {
         passwordTF = UITextField();
@@ -128,22 +113,22 @@ extension RegisterVC
         view?.addSubview(passwordTF!)
         passwordTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         passwordTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
-        passwordTF?.topAnchor.constraint(equalTo: (emailTF?.bottomAnchor)!, constant: 10).isActive=true
+        passwordTF?.topAnchor.constraint(equalTo: (usernameTF?.bottomAnchor)!, constant: 10).isActive=true
         passwordTF?.heightAnchor.constraint(equalToConstant: 35).isActive=true
     }
     
-    func setHaveAccountBT()
+    func setNotHaveAccountBT()
     {
-        haveAccountBT = UIButton(type: .system);
-        haveAccountBT?.setTitle("Have already an account?", for: .normal)
-        haveAccountBT?.translatesAutoresizingMaskIntoConstraints = false
-        haveAccountBT?.addTarget(self, action: #selector(goToLoginVC), for: .touchUpInside)
-
-        view.addSubview(haveAccountBT!)
-        haveAccountBT?.leftAnchor.constraint(equalTo: (view?.leftAnchor)!, constant: 15).isActive=true
-        haveAccountBT?.widthAnchor.constraint(equalToConstant:180).isActive=true
-        haveAccountBT?.topAnchor.constraint(equalTo: (contentView?.bottomAnchor)!, constant: 10).isActive=true
-        haveAccountBT?.heightAnchor.constraint(equalToConstant:30).isActive=true
+        notHaveAccountBT = UIButton(type: .system);
+        notHaveAccountBT?.setTitle("Don't have an account?", for: .normal)
+        notHaveAccountBT?.translatesAutoresizingMaskIntoConstraints = false
+        notHaveAccountBT?.addTarget(self, action: #selector(goToRegisterVC), for: .touchUpInside)
+    
+        view.addSubview(notHaveAccountBT!)
+        notHaveAccountBT?.leftAnchor.constraint(equalTo: (view?.leftAnchor)!, constant: 15).isActive=true
+        notHaveAccountBT?.widthAnchor.constraint(equalToConstant:165).isActive=true
+        notHaveAccountBT?.topAnchor.constraint(equalTo: (contentView?.bottomAnchor)!, constant: 10).isActive=true
+        notHaveAccountBT?.heightAnchor.constraint(equalToConstant:30).isActive=true
     }
     
     func setOkBT()
@@ -155,22 +140,7 @@ extension RegisterVC
         view.addSubview(okBT!)
         okBT?.centerXAnchor.constraint(equalTo: (view?.centerXAnchor)!).isActive=true
         okBT?.widthAnchor.constraint(equalToConstant:50).isActive=true
-        okBT?.topAnchor.constraint(equalTo: (haveAccountBT?.bottomAnchor)!, constant: 30).isActive=true
+        okBT?.topAnchor.constraint(equalTo: (notHaveAccountBT?.bottomAnchor)!, constant: 30).isActive=true
         okBT?.heightAnchor.constraint(equalToConstant:50).isActive=true
-    }
-}
-
-//tools
-extension UIViewController
-{
-    func hideKeyboardWhenTappedAround()
-    {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard()
-    {
-        view.endEditing(true)
     }
 }
