@@ -39,8 +39,65 @@ extension RegisterVC
     
     @objc func tryRegister()
     {
-        //...
-        self.navigationController?.pushViewController(ProfileVC(), animated: true)
+        if((usernameTF?.text!.isEmpty)! || (passwordTF?.text!.isEmpty)! || (emailTF?.text!.isEmpty)!)
+        {
+            usernameTF?.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            passwordTF?.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            emailTF?.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            return
+        }
+        else
+        {
+            let url = URL(string:"http://localhost/gmemory/register.php")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let username: String = (usernameTF?.text!.lowercased())!
+            let password: String = (passwordTF?.text!.lowercased())!
+            let email: String = (emailTF?.text!.lowercased())!
+            let body = "username=\(username)&password=\(password)&email=\(email)"
+            request.httpBody = body.data(using: String.Encoding.utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler:
+            {
+                (data:Data?, response: URLResponse?, error:Error?) in
+                if (error != nil){
+                    let alert1 = UIAlertController(title: "Error", message: "Error with network", preferredStyle: .alert)
+                    alert1.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                    self.present(alert1, animated: true)
+                    return
+                }
+                print("=============")
+                print(data)
+                DispatchQueue.main.async(execute:
+                {
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: String]
+                        if(json!["status"]=="NO_2")
+                        {
+                            let alert2 = UIAlertController(title: "Error", message: "Error with connection to database", preferredStyle: .alert)
+                            alert2.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                            self.present(alert2, animated: true)
+                        }
+                        else if(json!["status"]=="NO_3"){
+                            let alert3 = UIAlertController(title: "Error", message: "User with such info exists", preferredStyle: .alert)
+                            alert3.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                            self.present(alert3, animated: true)
+                        }
+                        else if(json!["status"]=="YES")
+                        {
+                            //succesfull register
+                            self.navigationController?.pushViewController(ProfileVC(), animated: true)
+                        }
+                    }
+                    catch {
+                        let alert2 = UIAlertController(title: "Error", message: "Error on server", preferredStyle: .alert)
+                        alert2.addAction(UIAlertAction(title: "Ok", style: .cancel))
+                        self.present(alert2, animated: true)
+                        return
+                    }
+                })
+            }).resume()
+        }
     }
 }
 
@@ -104,6 +161,7 @@ extension RegisterVC
         usernameTF = UITextField();
         usernameTF?.placeholder = "username"
         usernameTF?.borderStyle = .roundedRect
+        usernameTF?.autocapitalizationType = .none
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
@@ -117,7 +175,9 @@ extension RegisterVC
         emailTF = UITextField();
         emailTF?.placeholder = "email"
         emailTF?.borderStyle = .roundedRect
+        emailTF?.autocapitalizationType = .none
         emailTF?.translatesAutoresizingMaskIntoConstraints = false
+        emailTF?.keyboardType = .emailAddress
         view?.addSubview(emailTF!)
         emailTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         emailTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
@@ -130,6 +190,7 @@ extension RegisterVC
         passwordTF = UITextField();
         passwordTF?.placeholder = "password"
         passwordTF?.borderStyle = .roundedRect
+        passwordTF?.isSecureTextEntry = true
         passwordTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(passwordTF!)
         passwordTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true

@@ -102,6 +102,7 @@ extension LoginVC
         usernameTF = UITextField();
         usernameTF?.placeholder = "username"
         usernameTF?.borderStyle = .roundedRect
+        usernameTF?.autocapitalizationType = .none
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
@@ -115,6 +116,7 @@ extension LoginVC
         passwordTF = UITextField();
         passwordTF?.placeholder = "password"
         passwordTF?.borderStyle = .roundedRect
+        passwordTF?.isSecureTextEntry = true
         passwordTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(passwordTF!)
         passwordTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
