@@ -36,6 +36,12 @@ extension RegisterVC
     {
         self.navigationController?.pushViewController(LoginVC(), animated: true)
     }
+    
+    @objc func tryRegister()
+    {
+        //...
+        self.navigationController?.pushViewController(ProfileVC(), animated: true)
+    }
 }
 
 //create view
@@ -152,6 +158,8 @@ extension RegisterVC
         okBT?.setTitle("OK", for: .normal)
         okBT?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         okBT?.translatesAutoresizingMaskIntoConstraints = false
+        okBT?.addTarget(self, action: #selector(tryRegister), for: .touchUpInside)
+        
         view.addSubview(okBT!)
         okBT?.centerXAnchor.constraint(equalTo: (view?.centerXAnchor)!).isActive=true
         okBT?.widthAnchor.constraint(equalToConstant:50).isActive=true

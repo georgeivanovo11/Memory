@@ -35,6 +35,12 @@ extension LoginVC
     {
         self.navigationController?.pushViewController(RegisterVC(), animated: true)
     }
+    
+    @objc func tryLogin()
+    {
+        //...
+        self.navigationController?.pushViewController(ProfileVC(), animated: true)
+    }
 }
 
 //MARK:-- create view
@@ -137,6 +143,7 @@ extension LoginVC
         okBT?.setTitle("OK", for: .normal)
         okBT?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         okBT?.translatesAutoresizingMaskIntoConstraints = false
+        okBT?.addTarget(self, action: #selector(tryLogin), for: .touchUpInside)
         view.addSubview(okBT!)
         okBT?.centerXAnchor.constraint(equalTo: (view?.centerXAnchor)!).isActive=true
         okBT?.widthAnchor.constraint(equalToConstant:50).isActive=true
