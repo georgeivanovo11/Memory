@@ -21,10 +21,13 @@ class LoginVC: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor.white
         setView()
         hideKeyboardWhenTappedAround()
+    }
+    override func viewDidAppear(_ animated: Bool)
+    {
+        self.navigationController?.isNavigationBarHidden = true
     }
 }
 
@@ -38,8 +41,59 @@ extension LoginVC
     
     @objc func tryLogin()
     {
-        //...
-        self.navigationController?.pushViewController(ProfileVC(), animated: true)
+        if((usernameTF?.text!.isEmpty)! || (passwordTF?.text!.isEmpty)!)
+        {
+            usernameTF?.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            passwordTF?.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            return
+        }
+        
+        let username: String = (usernameTF?.text?.lowercased())!
+        let password: String = (passwordTF?.text?.lowercased())!
+        
+        let url = URL(string:"http://localhost/gmemory/login.php")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "username=\(username)&password=\(password)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        
+        URLSession.shared.dataTask(with: request, completionHandler:
+        {
+            (data:Data?, response: URLResponse?, error:Error?) in
+            if (error != nil){
+                DispatchQueue.main.async(execute:{
+                    self.showError(text: "Error with network")
+                })
+                return
+            }
+            
+            DispatchQueue.main.async(execute:
+            {
+                do{
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: AnyObject]
+                    let status: String = json!["status"] as! String
+                    if(status=="NO_2")
+                    {
+                        self.showError(text: "Error with connection to database")
+                        return
+                    }
+                    else if(status=="NO_3" || status=="NO_4"){
+                        self.showError(text: "Wrong username or password")
+                        return
+                    }
+                    else if(status=="YES")
+                    {
+                        ////succesfull register
+                        self.navigationController?.pushViewController(ProfileVC(), animated: true)
+                        ////
+                    }
+                }
+                catch {
+                    self.showError(text: "Error on server")
+                    return
+                }
+            })
+        }).resume()
     }
 }
 
@@ -103,6 +157,7 @@ extension LoginVC
         usernameTF?.placeholder = "username"
         usernameTF?.borderStyle = .roundedRect
         usernameTF?.autocapitalizationType = .none
+        usernameTF?.autocorrectionType = .no
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true

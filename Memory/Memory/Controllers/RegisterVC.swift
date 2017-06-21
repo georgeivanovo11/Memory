@@ -22,10 +22,13 @@ class RegisterVC: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor.white
         setView()
         hideKeyboardWhenTappedAround()
+    }
+    override func viewDidAppear(_ animated: Bool)
+    {
+        self.navigationController?.isNavigationBarHidden = true
     }
 }
 
@@ -46,58 +49,57 @@ extension RegisterVC
             emailTF?.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
             return
         }
-        else
+        
+        let username: String = (usernameTF?.text!.lowercased())!
+        let password: String = (passwordTF?.text!.lowercased())!
+        let email: String = (emailTF?.text!.lowercased())!
+        if(password.characters.count<6)
         {
-            let url = URL(string:"http://localhost/gmemory/register.php")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            let username: String = (usernameTF?.text!.lowercased())!
-            let password: String = (passwordTF?.text!.lowercased())!
-            let email: String = (emailTF?.text!.lowercased())!
-            let body = "username=\(username)&password=\(password)&email=\(email)"
-            request.httpBody = body.data(using: String.Encoding.utf8)
+            self.showError(text: "Password should be at least 6 charactes")
+            return
+        }
+        //chech email?
             
-            URLSession.shared.dataTask(with: request, completionHandler:
+        let url = URL(string:"http://localhost/gmemory/register.php")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "username=\(username)&password=\(password)&email=\(email)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+            
+        URLSession.shared.dataTask(with: request, completionHandler:
+        {
+            (data:Data?, response: URLResponse?, error:Error?) in
+            if (error != nil){
+                DispatchQueue.main.async(execute:{
+                    self.showError(text: "Error with network")
+                })
+                return
+            }
+            DispatchQueue.main.async(execute:
             {
-                (data:Data?, response: URLResponse?, error:Error?) in
-                if (error != nil){
-                    let alert1 = UIAlertController(title: "Error", message: "Error with network", preferredStyle: .alert)
-                    alert1.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                    self.present(alert1, animated: true)
-                    return
-                }
-                print("=============")
-                print(data)
-                DispatchQueue.main.async(execute:
-                {
-                    do{
+                do{
                         let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: String]
                         if(json!["status"]=="NO_2")
                         {
-                            let alert2 = UIAlertController(title: "Error", message: "Error with connection to database", preferredStyle: .alert)
-                            alert2.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                            self.present(alert2, animated: true)
+                            self.showError(text: "Error with connection to database")
+                            return
                         }
                         else if(json!["status"]=="NO_3"){
-                            let alert3 = UIAlertController(title: "Error", message: "User with such info exists", preferredStyle: .alert)
-                            alert3.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                            self.present(alert3, animated: true)
+                            self.showError(text: "User with such info exists")
+                            return
                         }
                         else if(json!["status"]=="YES")
                         {
                             //succesfull register
                             self.navigationController?.pushViewController(ProfileVC(), animated: true)
                         }
-                    }
-                    catch {
-                        let alert2 = UIAlertController(title: "Error", message: "Error on server", preferredStyle: .alert)
-                        alert2.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                        self.present(alert2, animated: true)
+                }
+                catch {
+                        self.showError(text: "Error on server")
                         return
-                    }
-                })
-            }).resume()
-        }
+                }
+            })
+        }).resume()
     }
 }
 
@@ -162,6 +164,7 @@ extension RegisterVC
         usernameTF?.placeholder = "username"
         usernameTF?.borderStyle = .roundedRect
         usernameTF?.autocapitalizationType = .none
+        usernameTF?.autocorrectionType = .no
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
         view?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
@@ -176,6 +179,7 @@ extension RegisterVC
         emailTF?.placeholder = "email"
         emailTF?.borderStyle = .roundedRect
         emailTF?.autocapitalizationType = .none
+        usernameTF?.autocorrectionType = .no
         emailTF?.translatesAutoresizingMaskIntoConstraints = false
         emailTF?.keyboardType = .emailAddress
         view?.addSubview(emailTF!)
@@ -229,17 +233,3 @@ extension RegisterVC
     }
 }
 
-//tools
-extension UIViewController
-{
-    func hideKeyboardWhenTappedAround()
-    {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard()
-    {
-        view.endEditing(true)
-    }
-}

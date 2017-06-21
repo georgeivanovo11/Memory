@@ -12,6 +12,7 @@
 		5E12AE291EF97ED2008ADC07 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E12AE281EF97ED2008ADC07 /* RegisterVC.swift */; };
 		5E12AE2B1EF984E8008ADC07 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E12AE2A1EF984E8008ADC07 /* LoginVC.swift */; };
 		5E12AE2D1EF986EF008ADC07 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E12AE2C1EF986EF008ADC07 /* ProfileVC.swift */; };
+		5EF18DAE1EFB212A0099C6C5 /* VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF18DAD1EFB212A0099C6C5 /* VC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		5E12AE281EF97ED2008ADC07 /* RegisterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
 		5E12AE2A1EF984E8008ADC07 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		5E12AE2C1EF986EF008ADC07 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
+		5EF18DAD1EFB212A0099C6C5 /* VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				5E12AE281EF97ED2008ADC07 /* RegisterVC.swift */,
 				5E12AE2A1EF984E8008ADC07 /* LoginVC.swift */,
 				5E12AE2C1EF986EF008ADC07 /* ProfileVC.swift */,
+				5EF18DAD1EFB212A0099C6C5 /* VC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -144,6 +147,7 @@
 				5E12AE2D1EF986EF008ADC07 /* ProfileVC.swift in Sources */,
 				5E12AE161EF97E74008ADC07 /* AppDelegate.swift in Sources */,
 				5E12AE291EF97ED2008ADC07 /* RegisterVC.swift in Sources */,
+				5EF18DAE1EFB212A0099C6C5 /* VC.swift in Sources */,
 				5E12AE2B1EF984E8008ADC07 /* LoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,6 +175,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -226,6 +232,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -301,6 +309,7 @@
 				5E12AE261EF97E74008ADC07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
