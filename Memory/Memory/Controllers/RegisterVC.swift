@@ -23,12 +23,10 @@ class RegisterVC: UIViewController
     {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        self.navigationController?.isNavigationBarHidden = true
+        
         setView()
         hideKeyboardWhenTappedAround()
-    }
-    override func viewDidAppear(_ animated: Bool)
-    {
-        self.navigationController?.isNavigationBarHidden = true
     }
 }
 
@@ -78,19 +76,22 @@ extension RegisterVC
             DispatchQueue.main.async(execute:
             {
                 do{
-                        let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: String]
-                        if(json!["status"]=="NO_2")
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:String]
+                    let status:String=json!["status"]!
+                        if(status=="NO_2")
                         {
                             self.showError(text: "Error with connection to database")
                             return
                         }
-                        else if(json!["status"]=="NO_3"){
+                        else if(status=="NO_3"){
                             self.showError(text: "User with such info exists")
                             return
                         }
-                        else if(json!["status"]=="YES")
+                        else if(status=="YES")
                         {
                             //succesfull register
+                            UserDefaults.standard.set(json, forKey: "savedUser")
+                            activeUser = UserDefaults.standard.value(forKey: "savedUser") as? [String:String]
                             self.navigationController?.pushViewController(ProfileVC(), animated: true)
                         }
                 }

@@ -23,6 +23,21 @@ class ProfileVC: UIViewController
         self.navigationItem.title = "Profile"
         view.backgroundColor = UIColor.white
         setView()
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
+        usernameLB?.text = activeUser!["username"]?.uppercased()
+        emailLB?.text = activeUser!["email"]
+    }
+}
+
+extension ProfileVC
+{
+    @objc func logout()
+    {
+        UserDefaults.standard.removeObject(forKey: "savedUser")
+        UserDefaults.standard.synchronize()
+        
+        self.navigationController?.pushViewController(LoginVC(), animated: true)
     }
 }
 
@@ -100,7 +115,7 @@ extension ProfileVC
         //emailLB?.backgroundColor = UIColor.green
         emailLB?.translatesAutoresizingMaskIntoConstraints = false
         contentView?.addSubview(emailLB!)
-        emailLB?.leftAnchor.constraint(equalTo: (profileImage?.rightAnchor)!).isActive=true
+        emailLB?.leftAnchor.constraint(equalTo: (profileImage?.rightAnchor)!, constant: 10).isActive=true
         emailLB?.topAnchor.constraint(equalTo: (usernameLB?.bottomAnchor)!).isActive=true
         emailLB?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!) .isActive=true
         emailLB?.heightAnchor.constraint(equalTo: (profileImage?.heightAnchor)!, multiplier: 1/3).isActive=true

@@ -22,12 +22,9 @@ class LoginVC: UIViewController
     {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        self.navigationController?.isNavigationBarHidden = true
         setView()
         hideKeyboardWhenTappedAround()
-    }
-    override func viewDidAppear(_ animated: Bool)
-    {
-        self.navigationController?.isNavigationBarHidden = true
     }
 }
 
@@ -70,8 +67,8 @@ extension LoginVC
             DispatchQueue.main.async(execute:
             {
                 do{
-                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: AnyObject]
-                    let status: String = json!["status"] as! String
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:String]
+                    let status: String = json!["status"]!
                     if(status=="NO_2")
                     {
                         self.showError(text: "Error with connection to database")
@@ -84,8 +81,9 @@ extension LoginVC
                     else if(status=="YES")
                     {
                         ////succesfull register
+                        UserDefaults.standard.set(json!, forKey: "savedUser")
+                        activeUser = UserDefaults.standard.value(forKey: "savedUser") as? [String:String]
                         self.navigationController?.pushViewController(ProfileVC(), animated: true)
-                        ////
                     }
                 }
                 catch {

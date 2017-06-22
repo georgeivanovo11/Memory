@@ -8,6 +8,8 @@
 
 import UIKit
 
+var activeUser: [String:String]?
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
@@ -17,8 +19,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        window?.rootViewController = UINavigationController(rootViewController: ProfileVC())
+        
+        activeUser = UserDefaults.standard.value(forKey: "savedUser") as? [String:String]
+        if(activeUser != nil && activeUser!["username"] != nil)
+        {
+            window?.rootViewController = UINavigationController(rootViewController: ProfileVC())
+        }
+        else
+        {
+            window?.rootViewController = UINavigationController(rootViewController: LoginVC())
+        }
+        
         return true
+    }
+    
+    func login()
+    {
+        
     }
 }
 
