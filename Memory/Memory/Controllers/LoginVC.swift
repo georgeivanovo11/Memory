@@ -139,7 +139,7 @@ extension LoginVC
     
     func setContentView()
     {
-        contentView = UILabel();
+        contentView = UIView();
         //contentView?.backgroundColor=UIColor.blue
         contentView?.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(contentView!)
@@ -159,7 +159,7 @@ extension LoginVC
         usernameTF?.autocapitalizationType = .none
         usernameTF?.autocorrectionType = .no
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
-        view?.addSubview(usernameTF!)
+        contentView?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         usernameTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
         usernameTF?.topAnchor.constraint(equalTo: (contentView?.topAnchor)!).isActive=true
@@ -173,7 +173,7 @@ extension LoginVC
         passwordTF?.borderStyle = .roundedRect
         passwordTF?.isSecureTextEntry = true
         passwordTF?.translatesAutoresizingMaskIntoConstraints = false
-        view?.addSubview(passwordTF!)
+        contentView?.addSubview(passwordTF!)
         passwordTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         passwordTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
         passwordTF?.topAnchor.constraint(equalTo: (usernameTF?.bottomAnchor)!, constant: 10).isActive=true

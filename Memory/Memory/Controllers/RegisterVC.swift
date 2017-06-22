@@ -145,7 +145,7 @@ extension RegisterVC
     
     func setContentView()
     {
-        contentView = UILabel();
+        contentView = UIView();
         //contentView?.backgroundColor=UIColor.blue
         contentView?.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(contentView!)
@@ -166,7 +166,7 @@ extension RegisterVC
         usernameTF?.autocapitalizationType = .none
         usernameTF?.autocorrectionType = .no
         usernameTF?.translatesAutoresizingMaskIntoConstraints = false
-        view?.addSubview(usernameTF!)
+        contentView?.addSubview(usernameTF!)
         usernameTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         usernameTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
         usernameTF?.topAnchor.constraint(equalTo: (contentView?.topAnchor)!).isActive=true
@@ -182,7 +182,7 @@ extension RegisterVC
         usernameTF?.autocorrectionType = .no
         emailTF?.translatesAutoresizingMaskIntoConstraints = false
         emailTF?.keyboardType = .emailAddress
-        view?.addSubview(emailTF!)
+        contentView?.addSubview(emailTF!)
         emailTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         emailTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
         emailTF?.topAnchor.constraint(equalTo: (usernameTF?.bottomAnchor)!, constant: 10).isActive=true
@@ -196,7 +196,7 @@ extension RegisterVC
         passwordTF?.borderStyle = .roundedRect
         passwordTF?.isSecureTextEntry = true
         passwordTF?.translatesAutoresizingMaskIntoConstraints = false
-        view?.addSubview(passwordTF!)
+        contentView?.addSubview(passwordTF!)
         passwordTF?.rightAnchor.constraint(equalTo: (contentView?.rightAnchor)!).isActive=true
         passwordTF?.leftAnchor.constraint(equalTo: (contentView?.leftAnchor)!).isActive=true
         passwordTF?.topAnchor.constraint(equalTo: (emailTF?.bottomAnchor)!, constant: 10).isActive=true
