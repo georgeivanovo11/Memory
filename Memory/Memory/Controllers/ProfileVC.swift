@@ -11,10 +11,13 @@ import UIKit
 class ProfileVC: UIViewController
 {
     var contentView: UIView?
+    var menuView: UIView?
     var profileImage: UIImageView?
     var usernameLB: UILabel?
     var countLB: UILabel?
     var emailLB: UILabel?
+    lazy var dictionaryBT: UIButton? = nil
+    lazy var trainBT: UIButton? = nil
     
     override func viewDidLoad()
     {
@@ -39,6 +42,11 @@ extension ProfileVC
         
         self.navigationController?.pushViewController(LoginVC(), animated: true)
     }
+    
+    @objc func goToSearchVC()
+    {
+        self.navigationController?.pushViewController(SearchVC(), animated: true)
+    }
 }
 
 //set view
@@ -47,6 +55,7 @@ extension ProfileVC
     func setView()
     {
         setContentView()
+        setMenuView()
     }
     
     func setContentView()
@@ -121,6 +130,54 @@ extension ProfileVC
         emailLB?.heightAnchor.constraint(equalTo: (profileImage?.heightAnchor)!, multiplier: 1/3).isActive=true
     }
     
+    func setMenuView()
+    {
+        menuView = UIView();
+        menuView?.layer.borderWidth = 1.0
+        menuView?.layer.borderColor = UIColor.lightGray.cgColor
+        menuView?.layer.cornerRadius = 20
+        menuView?.layer.masksToBounds = true
+        menuView?.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(menuView!)
+        menuView?.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15).isActive=true
+        menuView?.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15).isActive=true
+        menuView?.topAnchor.constraint(equalTo: (contentView?.bottomAnchor)!, constant: 15).isActive=true
+        menuView?.heightAnchor.constraint(equalToConstant: 120).isActive=true
+        setDictionaryBT()
+        setTrainBT()
+    }
+    
+    func setDictionaryBT()
+    {
+        dictionaryBT = UIButton(type: .system);
+        dictionaryBT?.setTitle("Dictionary", for: .normal)
+        dictionaryBT?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        dictionaryBT?.backgroundColor = UIColor.lightGray
+        dictionaryBT?.setTitleColor(UIColor.white, for: .normal)
+        dictionaryBT?.translatesAutoresizingMaskIntoConstraints = false
+        dictionaryBT?.addTarget(self, action: #selector(goToSearchVC), for: .touchUpInside)
+        menuView?.addSubview(dictionaryBT!)
+        dictionaryBT?.leftAnchor.constraint(equalTo: (menuView?.leftAnchor)!).isActive=true
+        dictionaryBT?.rightAnchor.constraint(equalTo: (menuView?.rightAnchor)!).isActive=true
+        dictionaryBT?.topAnchor.constraint(equalTo: (menuView?.topAnchor)!).isActive=true
+        dictionaryBT?.heightAnchor.constraint(equalToConstant:60).isActive=true
+    }
+    
+    func setTrainBT()
+    {
+        trainBT = UIButton(type: .system);
+        trainBT?.setTitle("Train", for: .normal)
+        trainBT?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        trainBT?.backgroundColor = UIColor.white
+        trainBT?.setTitleColor(UIColor.lightGray, for: .normal)
+        trainBT?.translatesAutoresizingMaskIntoConstraints = false
+        //trainBT?.addTarget(self, action: #selector(tryLogin), for: .touchUpInside)
+        menuView?.addSubview(trainBT!)
+        trainBT?.leftAnchor.constraint(equalTo: (menuView?.leftAnchor)!).isActive=true
+        trainBT?.rightAnchor.constraint(equalTo: (menuView?.rightAnchor)!).isActive=true
+        trainBT?.topAnchor.constraint(equalTo: (dictionaryBT?.bottomAnchor)!).isActive=true
+        trainBT?.heightAnchor.constraint(equalToConstant:60).isActive=true
+    }
 }
 
 
