@@ -19,6 +19,8 @@ class AddSegmentVC: UIViewController
     var antLB: UILabel?
     var antTF: UITextField?
     
+    var engWord:AnyObject?
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -26,6 +28,15 @@ class AddSegmentVC: UIViewController
         view.backgroundColor = UIColor.white
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
         setView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        if (engWord != nil)
+        {
+            let engWordText = engWord!["title"] as! String
+            engTF?.text = engWordText
+        }
     }
 }
 
