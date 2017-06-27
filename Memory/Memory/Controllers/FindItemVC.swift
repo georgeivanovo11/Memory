@@ -35,33 +35,88 @@ class FindItemVC: UITableViewController,  UISearchBarDelegate
 //action
 extension FindItemVC
 {
-    func addWord()
+    func addWord(wordText: String?, transText: String?, posText: String?)
     {
         let alert = UIAlertController(title: "Adding new word", message: "This word will be added to database", preferredStyle: .alert)
         alert.addTextField(configurationHandler:{
             (textField) in
             textField.placeholder = "Word"
             textField.borderStyle = .roundedRect
-            textField.text = self.searchBar.text
+            textField.text = wordText
         })
         alert.addTextField(configurationHandler:{
             (textField) in
             textField.placeholder = "Transcription"
+            textField.text = transText
             textField.borderStyle = .roundedRect
         })
         alert.addTextField(configurationHandler:{
             (textField) in
+            textField.text = posText
             textField.placeholder = "Part of speech"
             textField.borderStyle = .roundedRect
         })
         
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: {
             [weak alert] (_) in
-            //action
-            print((alert?.textFields![0].text)!)
-            print((alert?.textFields![1].text)!)
-            DispatchQueue.main.async(execute:
-                {self.navigationController?.popViewController(animated: true)})
+            if((alert?.textFields![0].text?.isEmpty)! || (alert?.textFields![1].text?.isEmpty)! || (alert?.textFields![2].text?.isEmpty)!)
+            {
+                self.showError(text: "Fill all of the fields")
+                return
+            }
+            let word: String = (alert?.textFields![0].text!)!
+            let trans: String = (alert?.textFields![1].text!)!
+            let pos: String = (alert?.textFields![2].text!)!
+            if (!(pos=="noun" || pos=="verb" || pos=="adjective"))
+            {
+                self.showError(text: "Wrong part of speech")
+                return
+            }
+            let posID = self.idPOSByTitle(title: pos)
+            
+            let url = URL(string:"http://localhost/gmemory/addEngWord.php")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let body = "title=\(word)&trans=\(trans)&posID=\(posID)"
+            request.httpBody = body.data(using: String.Encoding.utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler:
+                {
+                    (data:Data?, response: URLResponse?, error:Error?) in
+                    if (error != nil){
+                        DispatchQueue.main.async(execute:{
+                            self.showError(text: "Error with network")
+                        })
+                        return
+                    }
+                    DispatchQueue.main.async(execute:
+                        {
+                            do{
+                                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                                let status:String=json!["status"]! as! String
+                                if(status=="NO_2")
+                                {
+                                    self.showError(text: "Error with connection to database")
+                                    return
+                                }
+                                else if(status=="NO_3"){
+                                    self.showError(text: "Word was not added")
+                                    return
+                                }
+                                else if(status=="YES")
+                                {
+                                    //succesfull register
+                                    let word: AnyObject = json!["word"]!
+                                    self.segmentVC?.engWord = word
+                                    self.navigationController?.popViewController(animated: true)
+                                }
+                            }
+                            catch {
+                                self.showError(text: "Error on server")
+                                return
+                            }
+                    })
+            }).resume()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:nil))
         self.present(alert, animated: true, completion: nil)
@@ -160,12 +215,26 @@ extension FindItemVC
     {
         if(indexPath.row==0)
         {
-            addWord()
+            addWord(wordText: self.searchBar.text, transText: nil,posText: nil)
         }
         else
         {
             segmentVC?.engWord = words[indexPath.row-1]
             navigationController?.popViewController(animated: true)
         }
+    }
+}
+
+//MARK: tools
+extension FindItemVC
+{
+    func idPOSByTitle(title: String) -> Int
+    {
+        if (title == "noun")
+        {return 1}
+        else if (title == "verb")
+        {return 2}
+        else
+        {return 3}
     }
 }
