@@ -21,6 +21,7 @@ class AddSegmentVC: UIViewController
     
     var engWord:AnyObject?
     var rusWord:AnyObject?
+    var topic: AnyObject?
     
     override func viewDidLoad()
     {
@@ -33,15 +34,24 @@ class AddSegmentVC: UIViewController
     
     override func viewDidAppear(_ animated: Bool)
     {
+        print("====")
         if (engWord != nil)
         {
             let engWordText = engWord!["title"] as! String
             engTF?.text = engWordText
+            print(engWord!["id"] as! String)
         }
         if (rusWord != nil)
         {
             let rusWordText = rusWord!["title"] as! String
             rusTF?.text = rusWordText
+            print(rusWord!["id"] as! String)
+        }
+        if (topic != nil)
+        {
+            let topicText = topic!["title"] as! String
+            topicTF?.text = topicText
+            print(topic!["id"] as! String)
         }
     }
 }
@@ -70,7 +80,17 @@ extension AddSegmentVC
         VC.name = "Enter russian word"
         VC.segmentVC = self
         self.navigationController?.pushViewController(VC, animated: true)
-        engTF?.endEditing(true)
+        rusTF?.endEditing(true)
+    }
+    
+    @objc func topicSearch()
+    {
+        let VC = FindItemVC()
+        VC.type = "top"
+        VC.name = "Enter topic"
+        VC.segmentVC = self
+        self.navigationController?.pushViewController(VC, animated: true)
+        topicTF?.endEditing(true)
     }
 }
 
@@ -129,6 +149,7 @@ extension AddSegmentVC
         
         topicTF = UITextField()
         topicTF?.borderStyle = .roundedRect
+        topicTF?.addTarget(self, action: #selector(topicSearch), for: .editingDidBegin)
         view.addSubview(topicTF!)
         topicTF?.translatesAutoresizingMaskIntoConstraints = false
         topicTF?.leftAnchor.constraint(equalTo: (topicLB?.rightAnchor)!, constant: 5).isActive=true

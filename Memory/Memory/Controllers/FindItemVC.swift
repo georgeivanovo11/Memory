@@ -48,6 +48,12 @@ extension FindItemVC
         let alert = createAlert(wordText: wordText, transText: transText, posText: posText, myUrl: myUrl!)
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func addTopic(title:String?)
+    {
+        let alert = createTopicAlert(title: title, user: "george", myUrl: "http://localhost/gmemory/addTopic.php")
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 //search bar
@@ -60,25 +66,22 @@ extension FindItemVC
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
     {
+        var request: URLRequest?
+        
         if(type == "eng")
         {
-            searchItem(myUrl: "http://localhost/gmemory/getEngWords.php", searchText: searchText)
+            request = createRequest(myUrl: "http://localhost/gmemory/getEngWords.php", searchText: searchText)
         }
         else if (type == "rus")
         {
-            searchItem(myUrl: "http://localhost/gmemory/getRusWords.php", searchText: searchText)
+            request = createRequest(myUrl: "http://localhost/gmemory/getRusWords.php", searchText: searchText)
         }
-    }
-    
-    func searchItem(myUrl: String, searchText: String)
-    {
-        let url = URL(string:myUrl)!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        let body = "text=\(searchText)"
-        request.httpBody = body.data(using: String.Encoding.utf8)
+        else if (type == "top")
+        {
+            request = createRequest(myUrl: "http://localhost/gmemory/getTopics.php", searchText: searchText, username: "george")
+        }
         
-        URLSession.shared.dataTask(with: request, completionHandler:
+        URLSession.shared.dataTask(with: request!, completionHandler:
             {
                 (data:Data?, response: URLResponse?, error:Error?) in
                 if (error != nil){
@@ -121,40 +124,78 @@ extension FindItemVC
                 })
         }).resume()
     }
+    
+    func createRequest(myUrl: String, searchText: String) -> URLRequest
+    {
+        let url = URL(string:myUrl)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "text=\(searchText)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        return request
+    }
+    
+    func createRequest(myUrl: String, searchText: String, username: String) -> URLRequest
+    {
+        let url = URL(string:myUrl)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "text=\(searchText)&user=\(username)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        return request
+    }
 }
 
 //table view
 extension FindItemVC
 {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return words.count+1
     }
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell1 = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
         
         if(indexPath.row==0)
         {
-            cell1.textLabel?.text = searchBar.text! + " - add new word"
+            if(type == "rus" || type == "eng"){
+                cell.textLabel?.text = searchBar.text! + " - add new word"
+            }
+            else{
+                cell.textLabel?.text = searchBar.text! + " - add new topic"
+            }
         }
         else
         {
             let word = words[indexPath.row-1]
             let title:String = word["title"] as! String
-            let type:String = word["speech"] as! String
-            cell1.textLabel?.text = title + " - " + type
+            
+            var fulltext: String?
+            if(type == "rus" || type == "eng"){
+                let type:String = word["speech"] as! String
+                fulltext = title + " - " + type
+            }
+            else{
+                fulltext = title
+            }
+            
+            cell.textLabel?.text = fulltext
         }
-        return cell1
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if(indexPath.row==0)
         {
-            addWord(wordText: self.searchBar.text, transText: nil,posText: nil)
+            if(type == "eng" || type == "rus"){
+                addWord(wordText: self.searchBar.text, transText: nil,posText: nil)
+            }
+            else if (type == "top"){
+                addTopic(title: self.searchBar.text)
+            }
         }
         else
         {
@@ -163,6 +204,9 @@ extension FindItemVC
             }
             else if (type == "rus"){
                 segmentVC?.rusWord = words[indexPath.row-1]
+            }
+            else if (type == "top"){
+                segmentVC?.topic = words[indexPath.row-1]
             }
             navigationController?.popViewController(animated: true)
         }
@@ -271,6 +315,124 @@ extension FindItemVC
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:nil))
         return alert
+    }
+    
+    func createTopicAlert(title: String?, user:String, myUrl: String) -> UIAlertController
+    {
+        let alert = UIAlertController(title: "Adding new topic", message: "This topic will be added to database", preferredStyle: .alert)
+        alert.addTextField(configurationHandler:{
+            (textField) in
+            textField.placeholder = "Title"
+            textField.borderStyle = .roundedRect
+            textField.text = title
+        })
+        alert.addAction(UIAlertAction(title: "Add", style: .default, handler: {
+            [weak alert] (_) in
+            if((alert?.textFields![0].text?.isEmpty)!)
+            {
+                self.showError(text: "Fill all of the fields")
+                return
+            }
+            let mytitle: String = (alert?.textFields![0].text!)!
+            
+            let url = URL(string: myUrl)!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let body = "title=\(mytitle)&user=\(user)"
+            request.httpBody = body.data(using: String.Encoding.utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler:
+                {
+                    (data:Data?, response: URLResponse?, error:Error?) in
+                    if (error != nil){
+                        DispatchQueue.main.async(execute:{
+                            self.showError(text: "Error with network")
+                        })
+                        return
+                    }
+                    DispatchQueue.main.async(execute:
+                        {
+                            do{
+                                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                                let status:String=json!["status"]! as! String
+                                if(status=="NO_2")
+                                {
+                                    self.showError(text: "Error with connection to database")
+                                    return
+                                }
+                                else if(status=="NO_3"){
+                                    self.showError(text: "Word was not added")
+                                    return
+                                }
+                                else if(status=="YES")
+                                {
+                                    //succesfull register
+                                    let topic: AnyObject = json!["topic"]!
+                                    self.segmentVC?.topic = topic
+                                    self.navigationController?.popViewController(animated: true)
+                                }
+                            }
+                            catch {
+                                self.showError(text: "Error on server")
+                                return
+                            }
+                    })
+            }).resume()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:nil))
+        return alert
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        
+        if(type == "top")
+        {
+            var request: URLRequest?
+            request = createRequest(myUrl: "http://localhost/gmemory/getAllTopics.php", searchText: "george")
+            URLSession.shared.dataTask(with: request!, completionHandler:
+                {
+                    (data:Data?, response: URLResponse?, error:Error?) in
+                    if (error != nil){
+                        DispatchQueue.main.async(execute:{
+                            self.showError(text: "Error with network")
+                        })
+                        return
+                    }
+                    
+                    DispatchQueue.main.async(execute:
+                        {
+                            do{
+                                let notParseJson = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                                guard let json = notParseJson else{
+                                    print("error")
+                                    return
+                                }
+                                let status: String = json["status"]! as! String
+                                if(status=="NO_3")
+                                {
+                                    self.words.removeAll(keepingCapacity: true)
+                                    self.tableView.reloadData()
+                                    return
+                                }
+                                else if(status=="YES")
+                                {
+                                    guard let tempWords = json["words"] as? [AnyObject] else{
+                                        print("error")
+                                        return
+                                    }
+                                    self.words = tempWords
+                                    self.tableView.reloadData()
+                                    print(self.words.count)
+                                }
+                            }
+                            catch {
+                                self.showError(text: "Error on server")
+                                return
+                            }
+                    })
+            }).resume()
+        }
     }
 }
 
