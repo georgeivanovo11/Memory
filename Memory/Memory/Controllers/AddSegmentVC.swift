@@ -20,6 +20,7 @@ class AddSegmentVC: UIViewController
     var antTF: UITextField?
     
     var engWord:AnyObject?
+    var rusWord:AnyObject?
     
     override func viewDidLoad()
     {
@@ -37,6 +38,11 @@ class AddSegmentVC: UIViewController
             let engWordText = engWord!["title"] as! String
             engTF?.text = engWordText
         }
+        if (rusWord != nil)
+        {
+            let rusWordText = rusWord!["title"] as! String
+            rusTF?.text = rusWordText
+        }
     }
 }
 
@@ -50,7 +56,18 @@ extension AddSegmentVC
     @objc func engSearch()
     {
         let VC = FindItemVC()
+        VC.type = "eng"
         VC.name = "Enter english word"
+        VC.segmentVC = self
+        self.navigationController?.pushViewController(VC, animated: true)
+        engTF?.endEditing(true)
+    }
+    
+    @objc func rusSearch()
+    {
+        let VC = FindItemVC()
+        VC.type = "rus"
+        VC.name = "Enter russian word"
         VC.segmentVC = self
         self.navigationController?.pushViewController(VC, animated: true)
         engTF?.endEditing(true)
@@ -93,6 +110,7 @@ extension AddSegmentVC
         
         rusTF = UITextField()
         rusTF?.borderStyle = .roundedRect
+        rusTF?.addTarget(self, action: #selector(rusSearch), for: .editingDidBegin)
         view.addSubview(rusTF!)
         rusTF?.translatesAutoresizingMaskIntoConstraints = false
         rusTF?.leftAnchor.constraint(equalTo: (rusLB?.rightAnchor)!, constant: 5).isActive=true
