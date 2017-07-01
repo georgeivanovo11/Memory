@@ -14,6 +14,7 @@
 		5E12AE2D1EF986EF008ADC07 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E12AE2C1EF986EF008ADC07 /* ProfileVC.swift */; };
 		5E6C993A1EFD201E0059BFA2 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6C99391EFD201E0059BFA2 /* SearchVC.swift */; };
 		5E6C993C1EFD220B0059BFA2 /* AddSegmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6C993B1EFD220B0059BFA2 /* AddSegmentVC.swift */; };
+		5EC002281F06D51C006B3F42 /* ExampleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC002271F06D51C006B3F42 /* ExampleVC.swift */; };
 		5EC191F31EFD95B900E15FD3 /* FindItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC191F21EFD95B900E15FD3 /* FindItemVC.swift */; };
 		5EF18DAE1EFB212A0099C6C5 /* VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF18DAD1EFB212A0099C6C5 /* VC.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 		5E12AE2C1EF986EF008ADC07 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		5E6C99391EFD201E0059BFA2 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		5E6C993B1EFD220B0059BFA2 /* AddSegmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSegmentVC.swift; sourceTree = "<group>"; };
+		5EC002271F06D51C006B3F42 /* ExampleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleVC.swift; sourceTree = "<group>"; };
 		5EC191F21EFD95B900E15FD3 /* FindItemVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindItemVC.swift; sourceTree = "<group>"; };
 		5EF18DAD1EFB212A0099C6C5 /* VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -80,6 +82,7 @@
 				5E6C99391EFD201E0059BFA2 /* SearchVC.swift */,
 				5E6C993B1EFD220B0059BFA2 /* AddSegmentVC.swift */,
 				5EC191F21EFD95B900E15FD3 /* FindItemVC.swift */,
+				5EC002271F06D51C006B3F42 /* ExampleVC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 				5E6C993A1EFD201E0059BFA2 /* SearchVC.swift in Sources */,
 				5E12AE2D1EF986EF008ADC07 /* ProfileVC.swift in Sources */,
 				5E12AE161EF97E74008ADC07 /* AppDelegate.swift in Sources */,
+				5EC002281F06D51C006B3F42 /* ExampleVC.swift in Sources */,
 				5E6C993C1EFD220B0059BFA2 /* AddSegmentVC.swift in Sources */,
 				5EC191F31EFD95B900E15FD3 /* FindItemVC.swift in Sources */,
 				5E12AE291EF97ED2008ADC07 /* RegisterVC.swift in Sources */,
