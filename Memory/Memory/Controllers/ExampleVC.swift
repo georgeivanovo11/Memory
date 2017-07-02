@@ -42,11 +42,12 @@ extension ExampleVC
         
         let engtext: String = (expEngTV?.text?.lowercased())!
         let rustext: String = (expRusTV?.text?.lowercased())!
+        let user:String = activeUser!["username"]!
         
         let url = URL(string:"http://localhost/gmemory/addExample.php")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let body = "rus=\(rustext)&eng=\(engtext)&user=george"
+        let body = "rus=\(rustext)&eng=\(engtext)&user=\(user)"
         request.httpBody = body.data(using: String.Encoding.utf8)
         
         URLSession.shared.dataTask(with: request, completionHandler:

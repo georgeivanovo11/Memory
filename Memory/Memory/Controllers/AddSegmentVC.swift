@@ -48,19 +48,16 @@ class AddSegmentVC: UIViewController, UITableViewDelegate, UITableViewDataSource
         {
             let engWordText = engWord!["title"] as! String
             engTF?.text = engWordText
-            print(engWord!["id"] as! String)
         }
         if (rusWord != nil)
         {
             let rusWordText = rusWord!["title"] as! String
             rusTF?.text = rusWordText
-            print(rusWord!["id"] as! String)
         }
         if (topic != nil)
         {
             let topicText = topic!["title"] as! String
             topicTF?.text = topicText
-            print(topic!["id"] as! String)
         }
         exampleTV.reloadData()
     }
@@ -71,7 +68,164 @@ extension AddSegmentVC
 {
     @objc func save()
     {
+        about = aboutTF?.text
+        if((engWord == nil) || (rusWord == nil) || (topic == nil) || (about?.characters.count == 0))
+        {
+            self.showError(text: "Fill all of the fields")
+            return
+        }
+        let engID: String = engWord!["id"] as! String
+        let rusID: String = rusWord!["id"] as! String
+        let aboutText:String = about!
+        let topicID: String = topic!["id"] as! String
         
+        saveSegment(engID: engID, rusID: rusID, aboutText: aboutText, topicID: topicID)
+    }
+    
+    func saveSegment(engID: String, rusID: String, aboutText: String, topicID: String)
+    {
+        let user:String = activeUser!["username"]!
+        let url = URL(string: "http://localhost/gmemory/addSegment.php")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "eng=\(engID)&rus=\(rusID)&user=\(user)&about=\(aboutText)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        
+        URLSession.shared.dataTask(with: request, completionHandler:
+            {
+                (data:Data?, response: URLResponse?, error:Error?) in
+                if (error != nil){
+                    DispatchQueue.main.async(execute:{
+                        self.showError(text: "Error with network")
+                    })
+                    return
+                }
+                DispatchQueue.main.async(execute:
+                    {
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                            let status:String=json!["status"]! as! String
+                            if(status=="NO_2")
+                            {
+                                self.showError(text: "Error with connection to database")
+                                return
+                            }
+                            else if(status=="NO_3"){
+                                self.showError(text: "Segment was not added")
+                                return
+                            }
+                            else if(status=="YES")
+                            {
+                                //succesfull register
+                                let segment: AnyObject = json!["segment"]!
+                                let segmentID: String = segment["id"] as! String
+                                self.saveSegmentTopic(segmentID: segmentID, topicID: topicID)
+                                self.saveSegmentExamples(segmentID: segmentID)
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        }
+                        catch {
+                            self.showError(text: "Error on server")
+                            return
+                        }
+                })
+        }).resume()
+    }
+    
+    func saveSegmentTopic(segmentID: String,topicID: String)
+    {
+        let url = URL(string: "http://localhost/gmemory/addSegmentTopic.php")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "segment=\(segmentID)&topic=\(topicID)"
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        
+        URLSession.shared.dataTask(with: request, completionHandler:
+            {
+                (data:Data?, response: URLResponse?, error:Error?) in
+                if (error != nil){
+                    DispatchQueue.main.async(execute:{
+                        self.showError(text: "Error with network")
+                    })
+                    return
+                }
+                DispatchQueue.main.async(execute:
+                    {
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                            let status:String=json!["status"]! as! String
+                            if(status=="NO_2")
+                            {
+                                self.showError(text: "Error with connection to database")
+                                return
+                            }
+                            else if(status=="NO_3"){
+                                self.showError(text: "Segment was not added")
+                                return
+                            }
+                            else if(status=="YES")
+                            {
+                                //succesfull register
+                                print("yes")
+                                //self.navigationController?.popViewController(animated: true)
+                            }
+                        }
+                        catch {
+                            self.showError(text: "Error on server")
+                            return
+                        }
+                })
+        }).resume()
+    }
+    
+    func saveSegmentExamples(segmentID:String)
+    {
+        for example in self.examples
+        {
+            let exampleID: String = example["id"] as! String
+            let url = URL(string: "http://localhost/gmemory/addSegmentExample.php")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let body = "segment=\(segmentID)&example=\(exampleID)"
+            request.httpBody = body.data(using: String.Encoding.utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler:
+                {
+                    (data:Data?, response: URLResponse?, error:Error?) in
+                    if (error != nil){
+                        DispatchQueue.main.async(execute:{
+                            self.showError(text: "Error with network")
+                        })
+                        return
+                    }
+                    DispatchQueue.main.async(execute:
+                        {
+                            do{
+                                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:AnyObject]
+                                let status:String=json!["status"]! as! String
+                                if(status=="NO_2")
+                                {
+                                    self.showError(text: "Error with connection to database")
+                                    return
+                                }
+                                else if(status=="NO_3"){
+                                    self.showError(text: "Example was not added")
+                                    return
+                                }
+                                else if(status=="YES")
+                                {
+                                    //succesfull register
+                                    print("yes")
+                                    //self.navigationController?.popViewController(animated: true)
+                                }
+                            }
+                            catch {
+                                self.showError(text: "Error on server")
+                                return
+                            }
+                    })
+            }).resume()
+        }
     }
     
     @objc func engSearch()

@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        /*
         activeUser = UserDefaults.standard.value(forKey: "savedUser") as? [String:String]
         if(activeUser != nil && activeUser!["username"] != nil)
         {
@@ -30,9 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         {
             window?.rootViewController = UINavigationController(rootViewController: LoginVC())
         }
-        */
         
-        window?.rootViewController = UINavigationController(rootViewController: AddSegmentVC())
         return true
     }
     

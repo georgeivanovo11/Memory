@@ -51,7 +51,8 @@ extension FindItemVC
     
     func addTopic(title:String?)
     {
-        let alert = createTopicAlert(title: title, user: "george", myUrl: "http://localhost/gmemory/addTopic.php")
+        let user:String = activeUser!["username"]!
+        let alert = createTopicAlert(title: title, user: user, myUrl: "http://localhost/gmemory/addTopic.php")
         self.present(alert, animated: true, completion: nil)
     }
 }
@@ -78,7 +79,8 @@ extension FindItemVC
         }
         else if (type == "top")
         {
-            request = createRequest(myUrl: "http://localhost/gmemory/getTopics.php", searchText: searchText, username: "george")
+            let user:String = activeUser!["username"]!
+            request = createRequest(myUrl: "http://localhost/gmemory/getTopics.php", searchText: searchText, username: user)
         }
         
         URLSession.shared.dataTask(with: request!, completionHandler:
@@ -389,7 +391,8 @@ extension FindItemVC
         if(type == "top")
         {
             var request: URLRequest?
-            request = createRequest(myUrl: "http://localhost/gmemory/getAllTopics.php", searchText: "george")
+            let user:String = activeUser!["username"]!
+            request = createRequest(myUrl: "http://localhost/gmemory/getAllTopics.php", searchText: user)
             URLSession.shared.dataTask(with: request!, completionHandler:
                 {
                     (data:Data?, response: URLResponse?, error:Error?) in
